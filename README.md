@@ -47,12 +47,22 @@ cp .env.example .env
 
 Ensure the database credentials match the Docker MySQL service configuration.
 
-### Step 5: Start Docker Services
+### Step 5: Create Sail Alias
 
-Start the Docker environment using Laravel Sail:
+To simplify the usage of Laravel Sail, create an alias for the `./vendor/bin/sail` command:
 
 ```bash
-./vendor/bin/sail up
+alias sail='bash ./vendor/bin/sail'
+```
+
+Add this alias to your shell configuration file (e.g., `.bashrc`, `.zshrc`) to make it persistent.
+
+### Step 6: Start Docker Services
+
+Start the Docker environment using the Sail alias:
+
+```bash
+sail up
 ```
 
 At this point, the Docker environment is running, and the following services are active:

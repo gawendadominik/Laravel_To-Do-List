@@ -3,7 +3,9 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "start": "./vendor/bin/sail up -d && ./vendor/bin/sail npm run dev",
+        "start-env": "alias sail='bash ./vendor/bin/sail' && sail up -d && sail artisan migrate && npm run dev"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",

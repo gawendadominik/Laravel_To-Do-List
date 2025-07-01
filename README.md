@@ -69,3 +69,13 @@ At this point, the Docker environment is running, and the following services are
 
 -   **laravel.test**: The Laravel application.
 -   **mysql**: MySQL database server.
+
+### Step 7: Run Migrations
+
+Run database migrations to set up the schema:
+
+```bash
+sail artisan migrate
+```
+
+This step ensures the database is ready for use with the application.

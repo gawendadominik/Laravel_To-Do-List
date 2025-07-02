@@ -14,9 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::fallback(function () {
-    return redirect('/');
-});
+
 
 /**
  * The following lines are created automatically.
@@ -37,3 +35,6 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
+// redirection when no route matches
+Route::fallback(fn() => redirect('/'));

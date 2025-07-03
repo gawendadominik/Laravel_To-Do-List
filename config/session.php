@@ -3,7 +3,6 @@
 use Illuminate\Support\Str;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Session Driver
@@ -18,7 +17,7 @@ return [
     |
     */
 
-    'driver' => env('SESSION_DRIVER', 'file'),
+    'driver' => 'cookie',
 
     /*
     |--------------------------------------------------------------------------
@@ -128,7 +127,7 @@ return [
 
     'cookie' => env(
         'SESSION_COOKIE',
-        Str::slug(env('APP_NAME', 'laravel'), '_').'_session'
+        Str::slug(env('Tasklify', 'laravel'), '_') . '_session'
     ),
 
     /*
@@ -155,8 +154,7 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN'),
-
+    'domain' => env('SESSION_DOMAIN', null),
     /*
     |--------------------------------------------------------------------------
     | HTTPS Only Cookies
@@ -168,8 +166,7 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE'),
-
+    'secure' => env('SESSION_SECURE_COOKIE', false),
     /*
     |--------------------------------------------------------------------------
     | HTTP Access Only
@@ -210,5 +207,4 @@ return [
     */
 
     'partitioned' => false,
-
 ];

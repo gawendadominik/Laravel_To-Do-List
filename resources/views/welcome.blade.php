@@ -7,7 +7,7 @@
     @vite('resources/css/app.css')
     <script defer src="//unpkg.com/alpinejs"></script>
 </head>
-<body class="min-h-screen flex items-center justify-center bg-white">
+<body class="min-h-screen flex items-center justify-center bg-white overflow-hidden px-4 py-4 sm:px-6 sm:py-6">
     @auth
         <script>window.location.href = "{{ url('/tasks') }}";</script>
     @endauth
@@ -15,39 +15,37 @@
     <div class="w-full flex flex-col items-center py-20">
         <!-- Logo and Header -->
         <div class="flex flex-col items-center mb-10">
-            <h1 class="relative text-6xl md:text-7xl font-black tracking-tight text-transparent bg-gradient-to-br from-orange-400 via-orange-500 to-orange-700 bg-clip-text drop-shadow-lg select-none animate-gradient-x">
+            <h1 class="relative text-6xl md:text-7xl font-black tracking-tight text-transparent bg-gradient-to-br from-orange-400 via-orange-500 to-orange-700 bg-clip-text drop-shadow-lg select-none">
                 Tasklify
                 <span class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-2/3 h-3 blur-xl opacity-60 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-700 pointer-events-none"></span>
             </h1>
         </div>
-        <style>
-        @keyframes gradient-x {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        .animate-gradient-x {
-            background-size: 200% 200%;
-            animation: gradient-x 3s ease-in-out infinite;
-        }
-        </style>
-        <div class="relative text-center mb-8 max-w-xl">
-            <p class="text-2xl md:text-3xl font-semibold text-gray-800 mb-2 opacity-90">
-                Take control of your day!
-            </p>
-            <p class="text-lg md:text-xl text-gray-600 font-medium opacity-85">
-                Effortlessly organize, prioritize, and conquer your tasks.<br>
-                Boost your productivity with Taskify – your smart, simple to-do app.
-            </p>
-        </div>
-        <div class="flex flex-col sm:flex-row gap-4 w-full max-w-md justify-center">
-            <a href="{{ route('login') }}"
-                class="flex-1 px-8 py-3 rounded-lg bg-orange-500 text-white font-semibold border-2 border-orange-500 transition hover:bg-orange-600 text-base text-center shadow-md hover:scale-105 duration-150">
-                Log in
-            </a>
-            <a href="{{ route('register') }}"
-                class="flex-1 px-8 py-3 rounded-lg bg-transparent text-orange-500 font-semibold border-2 border-orange-500 transition hover:text-orange-600 hover:border-orange-600 text-base text-center shadow-md hover:scale-105 duration-150">
-                Sign up
-            </a>
+        <div class="w-full max-w-md bg-white p-6 rounded-lg shadow-lg mt-6 flex flex-col">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4 text-center">Take Control of Your Tasks</h2>
+            <div x-data="{ height: 0 }" x-init="height = window.innerHeight; window.addEventListener('resize', () => height = window.innerHeight)">
+                <div x-show="height >= 720" class="space-y-3 w-full">
+                    <div class="flex items-center bg-gray-100 p-3 rounded-md shadow-sm" id="item-1">
+                        <span class="text-orange-500 font-bold text-lg mr-2">1.</span>
+                        <span class="text-gray-700">Organize your tasks</span>
+                    </div>
+                    <div class="flex items-center bg-gray-100 p-3 rounded-md shadow-sm" id="item-2">
+                        <span class="text-orange-500 font-bold text-lg mr-2">2.</span>
+                        <span class="text-gray-700">Set priorities</span>
+                    </div>
+                    <div class="flex items-center bg-gray-100 p-3 rounded-md shadow-sm" id="item-3">
+                        <span class="text-orange-500 font-bold text-lg mr-2">3.</span>
+                        <span class="text-gray-700">Track progress</span>
+                    </div>
+                    <div class="flex items-center bg-gray-100 p-3 rounded-md shadow-sm" id="item-4">
+                        <span class="text-orange-500 font-bold text-lg mr-2">4.</span>
+                        <span class="text-gray-700">Achieve your goals</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 text-center flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{{ route('register') }}" class="flex-1 px-8 py-3 bg-orange-500 text-white rounded-lg shadow-lg hover:bg-orange-600 focus:outline-none focus:ring-4 focus:ring-orange-500 transition-transform transform hover:scale-105 text-lg font-semibold">Get Started</a>
+                <a href="{{ route('login') }}" class="flex-1 px-8 py-3 bg-white text-orange-500 border-2 border-orange-500 rounded-lg shadow-lg hover:text-orange-600 hover:border-orange-600 focus:outline-none focus:ring-4 focus:ring-orange-500 transition-transform transform hover:scale-105 text-lg font-semibold">Log in</a>
+            </div>
         </div>
     </div>
 </body>

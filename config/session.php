@@ -3,6 +3,7 @@
 use Illuminate\Support\Str;
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Default Session Driver
@@ -17,7 +18,7 @@ return [
     |
     */
 
-    'driver' => 'cookie',
+    'driver' => env('SESSION_DRIVER', 'file'),
 
     /*
     |--------------------------------------------------------------------------
@@ -207,4 +208,5 @@ return [
     */
 
     'partitioned' => false,
+
 ];

@@ -8,14 +8,11 @@
     <script defer src="//unpkg.com/alpinejs"></script>
 </head>
 <body class="min-h-screen flex items-center justify-center bg-gray-100 overflow-hidden">
-    <div class="w-full flex flex-col items-center py-20">
+    <div x-data="{ height: window.innerHeight }" x-init="window.addEventListener('resize', () => height = window.innerHeight)" class="w-full flex flex-col items-center" :class="height < 720 ? 'py-2' : 'py-20'">
         <!-- Logo and Header -->
         <div class="flex flex-col items-center mb-6">
             <div class="text-center mb-10">
-                <h1 class="relative text-6xl md:text-7xl font-black tracking-tight text-transparent bg-gradient-to-br from-orange-400 via-orange-500 to-orange-700 bg-clip-text drop-shadow-lg select-none animate-gradient-x">
-                    Tasklify
-                    <span class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-2/3 h-3 blur-xl opacity-80 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-700 pointer-events-none animate-pulse"></span>
-                </h1>
+                <x-application-logo class="w-20 h-20 mb-4" />
                 <h2 class="text-xl font-medium text-gray-700 mt-4">Log in to your account</h2>
             </div>
         </div>

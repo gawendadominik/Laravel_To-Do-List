@@ -8,9 +8,6 @@
     <script defer src="//unpkg.com/alpinejs"></script>
 </head>
 <body class="min-h-screen flex items-center justify-center bg-white overflow-hidden px-4 py-4 sm:px-6 sm:py-6">
-    @auth
-        <script>window.location.href = "{{ url('/tasks') }}";</script>
-    @endauth
 
     <div class="w-full flex flex-col items-center py-20">
         <!-- Logo and Header -->

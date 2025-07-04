@@ -10,7 +10,11 @@ class TasksController extends Controller
     public function index()
     {
         // Fetch and return all tasks
-        return response()->json(Tasks::all());
+        return response()->json(
+            Tasks::all()
+                ->sortBy('due_date')
+                ->groupBy('due_date')
+        );
     }
 
     public function store(Request $request)

@@ -18,6 +18,9 @@ class Tasks extends Model
         'due_date'
     ];
 
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected static function boot()
     {
         parent::boot();

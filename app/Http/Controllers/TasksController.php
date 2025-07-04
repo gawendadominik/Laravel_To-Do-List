@@ -21,7 +21,7 @@ class TasksController extends Controller
     {
         // Validate and create a new task
         $validatedData = $request->validate([
-            'user_id' => 'required|exists:users',
+            'user_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'priority' => 'required|in:low,medium,high',

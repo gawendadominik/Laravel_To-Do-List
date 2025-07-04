@@ -1,21 +1,13 @@
-<div x-data="{ showJumbotron: true }">
+<div>
     <!-- Jumbotron -->
-    <div x-show="showJumbotron" class="bg-orange-100 p-6 rounded-lg shadow mb-6">
-        <div class="flex justify-between items-center">
-            <div>
-                <h1 class="text-3xl font-bold text-orange-800">
-                    Welcome back, {{ auth()->user()->name }}
-                </h1>
-                <p class="text-orange-700 mt-2">
-                    Manage your tasks efficiently and stay organized. Create, update, and track your tasks with ease.
-                </p>
-            </div>
-            <button @click="showJumbotron = false" class="text-orange-800 hover:text-orange-600 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
+
+    <div x-data="{ showJumbotron: true }">
+        <x-jumbotron
+            x-show="showJumbotron"
+            :name=" auth()->user()->name "
+            :message="'Here you can manage your tasks efficiently.'"
+            @close-jumbotron.window="showJumbotron = false"
+        />
     </div>
 
     <!-- Tasks List -->
@@ -58,6 +50,21 @@
                 const currentIndex = statuses.indexOf(task.status);
                 const nextIndex = (currentIndex + 1) % statuses.length;
                 task.status = statuses[nextIndex];
+
+                fetch(`/api/tasks/${task.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.getAttribute('content') || ''
+                    },
+                    body: JSON.stringify({ status: task.status })
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log('Task updated:', data);
+                    this.fetchTasks();
+                })
+                .catch((error) => console.error('Error updating task:', error));
             },
             taskGroupKeyModifier(groupKey) {
                 const today = new Date();
@@ -95,16 +102,16 @@
                         year: 'numeric'
                     });
                 }
-            },
+            }
         }"
-        x-init="fetchTasks()"
+        x-init="fetchTasks(); window.addEventListener('fetch-tasks', () => fetchTasks());"
     >
         <!-- Header -->
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-2xl font-bold text-gray-800">Your tasks</h2>
             <a
-                href="/tasks/create"
-                class="inline-flex bg-orange-500 text-white px-4 py-2 rounded-lg shadow hover:bg-orange-600 transition items-center gap-2"
+                x-on:click="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'new-task-modal' }))"
+                class="inline-flex bg-orange-500 text-white px-4 py-2 rounded-lg shadow hover:bg-orange-600 transition items-center gap-2 cursor-pointer"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -116,20 +123,15 @@
         <!-- Grouped Tasks Section -->
         <div>
             <template x-for="(tasks, groupKey) in filteredGroupedTasks()" :key="groupKey">
-                <div x-data="{ open: taskGroupKeyModifier(groupKey) === 'Today' }" class="mb-4">
-                    <button
-                        @click="open = !open"
-                        class="w-full flex justify-between items-center px-2 py-2 font-semibold focus:outline-none bg-transparent text-gray-800"
-                    >
+
+                <x-accordion x-data="{ open: taskGroupKeyModifier(groupKey) === 'Today' }">
+                    <x-slot name="header">
                         <div>
                             <span class="text-lg font-medium text-gray-600 mr-1">Tasks for:</span>
                             <span class="text-lg font-medium text-orange-600" x-text="taskGroupKeyModifier(groupKey)"></span>
                         </div>
-                        <svg :class="{'transform rotate-180': open}" class="h-5 w-5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <div x-show="open" x-transition class="mt-2 p-2 px-4 text-orange-800">
+                    </x-slot>
+                    <x-slot name="content">
                         <template x-for="task in tasks" :key="task.id">
                             <div
                                 class="flex justify-between mb-1 hover:bg-gray-50 transition-colors rounded-lg p-3"
@@ -142,6 +144,7 @@
                                             class="hidden"
                                             @change="updateTaskStatus(task)"
                                         >
+                                        {{-- TODO: create tooltip --}}
                                         <div x-data="{ showTooltip: false, timer: null }" class="relative">
                                             <span
                                                 @mouseenter="timer = setTimeout(() => { showTooltip = true }, 3000)"
@@ -201,31 +204,32 @@
                                         </a>
                                     </div>
                                 </div>
-                                <span class="px-3 py-1 text-sm font-medium rounded-full flex items-center gap-2">
-                                    <span
-                                        class="px-2 py-1 rounded-full flex items-center justify-center"
-                                        :class="{
-                                            'bg-gray-200 text-gray-800': task.status === 'to-do',
-                                            'bg-yellow-200 text-yellow-800': task.status === 'in progress',
-                                            'bg-green-200 text-green-800': task.status === 'done'
-                                        }"
-                                        x-text="task.status.charAt(0).toUpperCase() + task.status.slice(1)"
-                                    ></span>
-                                    <span
-                                        class="px-2 py-1 rounded-full flex items-center justify-center"
-                                        :class="{
-                                            'bg-blue-200 text-blue-800': task.priority === 'low',
-                                            'bg-yellow-400 text-yellow-800': task.priority === 'medium',
-                                            'bg-red-400 text-red-800': task.priority === 'high'
-                                        }"
-                                        x-text="task.priority.charAt(0).toUpperCase() + task.priority.slice(1)"
-                                    ></span>
-                                </span>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-3 py-1 text-sm font-medium rounded-full flex items-center gap-2">
+                                        <span
+                                            class="px-2 py-1 rounded-full flex items-center justify-center"
+                                            :class="{
+                                                'bg-gray-200 text-gray-800': task.status === 'to-do',
+                                                'bg-yellow-200 text-yellow-800': task.status === 'in progress',
+                                                'bg-green-200 text-green-800': task.status === 'done'
+                                            }"
+                                            x-text="task.status.charAt(0).toUpperCase() + task.status.slice(1)"
+                                        ></span>
+                                        <span
+                                            class="px-2 py-1 rounded-full flex items-center justify-center"
+                                            :class="{
+                                                'bg-blue-200 text-blue-800': task.priority === 'low',
+                                                'bg-yellow-400 text-yellow-800': task.priority === 'medium',
+                                                'bg-red-400 text-red-800': task.priority === 'high'
+                                            }"
+                                            x-text="task.priority.charAt(0).toUpperCase() + task.priority.slice(1)"
+                                        ></span>
+                                    </span>
+                                </div>
                             </div>
                         </template>
-                    </div>
-                    <hr class="border-gray-200 mb-4">
-                </div>
+                    </x-slot>
+                </x-accordion>
             </template>
         </div>
 
@@ -240,4 +244,90 @@
             </button>
         </div>
     </div>
+
+    <x-modal name="new-task-modal" :show="false">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between bg-gradient-to-r from-orange-400 to-orange-600 px-6 py-4 rounded-t-lg shadow">
+            <h2 class="text-xl font-bold text-white">Create New Task</h2>
+            <button
+                @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'new-task-modal' }))"
+                class="text-white hover:text-gray-200 transition"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Modal Content -->
+        <form
+            method="POST"
+            class="space-y-6 bg-white p-6 rounded-b-lg shadow-md border border-gray-200"
+            @submit.prevent="submitForm"
+            x-data="{ title: '', description: '', dueDate: '', priority: 'low', submitForm() { const formData = { title: this.title, description: this.description, due_date: this.dueDate, priority: this.priority, user_id: {{ auth()->user()->id }}, status: 'to-do', }; fetch('/api/tasks', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.getAttribute('content') || '' }, body: JSON.stringify(formData) }) .then(async response => { if (!response.ok) { const error = await response.text(); console.error('Error creating task:', error); console.error('Failed to create task. Status:', response.status); return; } return response.json(); }) .then(data => { console.log('Task created:', data); this.title = ''; this.description = ''; this.dueDate = ''; this.priority = 'low'; window.dispatchEvent(new CustomEvent('close-modal', { detail: 'new-task-modal' })); window.dispatchEvent(new CustomEvent('fetch-tasks')); }) .catch(error => console.error('Error creating task:', error)); } }"
+        >
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                    <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        x-model="title"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm"
+                        placeholder="Enter task title"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label for="dueDate" class="block text-sm font-medium text-gray-700">Due Date</label>
+                    <input
+                        type="date"
+                        id="dueDate"
+                        name="dueDate"
+                        x-model="dueDate"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm"
+                        required
+                    />
+                </div>
+            </div>
+
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                <textarea
+                    id="description"
+                    name="description"
+                    x-model="description"
+                    class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm"
+                    placeholder="Enter task description"
+                ></textarea>
+            </div>
+
+            <div>
+                <label for="priority" class="block text-sm font-medium text-gray-700">Priority</label>
+                <select
+                    id="priority"
+                    name="priority"
+                    x-model="priority"
+                    required
+                    class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm"
+                >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+
+            <div class="flex justify-end">
+                <button
+                    type="submit"
+                    class="inline-flex bg-orange-500 text-white px-6 py-3 rounded-lg shadow hover:bg-orange-600 transition font-semibold"
+                >
+                    Create Task
+                </button>
+            </div>
+        </form>
+    </x-modal>
+
 </div>

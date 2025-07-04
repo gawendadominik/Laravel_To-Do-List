@@ -104,7 +104,7 @@
                 }
             }
         }"
-        x-init="fetchTasks(); window.addEventListener('fetch-tasks', () => fetchTasks());"
+        x-init="fetchTasks(); window.addEventListener('fetch-tasks', () => { fetchTasks(); });"
     >
         <!-- Header -->
         <div class="flex justify-between items-center mb-4">
@@ -259,12 +259,14 @@
             </button>
         </div>
 
+        {{ auth()->user()}}
+
         <!-- Modal Content -->
         <form
             method="POST"
             class="space-y-6 bg-white p-6 rounded-b-lg shadow-md border border-gray-200"
             @submit.prevent="submitForm"
-            x-data="{ title: '', description: '', dueDate: '', priority: 'low', submitForm() { const formData = { title: this.title, description: this.description, due_date: this.dueDate, priority: this.priority, user_id: {{ auth()->user()->id }}, status: 'to-do', }; fetch('/api/tasks', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.getAttribute('content') || '' }, body: JSON.stringify(formData) }) .then(async response => { if (!response.ok) { const error = await response.text(); console.error('Error creating task:', error); console.error('Failed to create task. Status:', response.status); return; } return response.json(); }) .then(data => { console.log('Task created:', data); this.title = ''; this.description = ''; this.dueDate = ''; this.priority = 'low'; window.dispatchEvent(new CustomEvent('close-modal', { detail: 'new-task-modal' })); window.dispatchEvent(new CustomEvent('fetch-tasks')); }) .catch(error => console.error('Error creating task:', error)); } }"
+            x-data="{ title: '', description: '', dueDate: '', priority: 'low', submitForm() { const formData = { title: this.title, description: this.description, due_date: this.dueDate, priority: this.priority, user_id: 9, status: 'to-do', }; fetch('/api/tasks', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.getAttribute('content') || '' }, body: JSON.stringify(formData) }) .then(async response => { if (!response.ok) { const error = await response.text(); console.error('Error creating task:', error); console.error('Failed to create task. Status:', response.status); return; } return response.json(); }) .then(data => { console.log('Task created:', data); this.title = ''; this.description = ''; this.dueDate = ''; this.priority = 'low'; window.dispatchEvent(new CustomEvent('close-modal', { detail: 'new-task-modal' })); window.dispatchEvent(new CustomEvent('fetch-tasks')); }) .catch(error => console.error('Error creating task:', error)); } }"
         >
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>

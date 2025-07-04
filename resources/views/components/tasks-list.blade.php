@@ -259,8 +259,6 @@
             </button>
         </div>
 
-        {{ auth()->user()}}
-
         <!-- Modal Content -->
         <form
             method="POST"

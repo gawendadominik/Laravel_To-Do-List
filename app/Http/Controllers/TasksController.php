@@ -11,8 +11,9 @@ class TasksController extends Controller
     {
         // Fetch and return all tasks
         return response()->json(
-            Tasks::all()
-                ->sortBy('due_date')
+            Tasks::where('user_id', auth()->user()->id)
+                ->orderBy('due_date')
+                ->get()
                 ->groupBy('due_date')
         );
     }
@@ -21,13 +22,14 @@ class TasksController extends Controller
     {
         // Validate and create a new task
         $validatedData = $request->validate([
-            'user_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'priority' => 'required|in:low,medium,high',
             'status' => 'required|in:to-do,in progress,done',
             'due_date' => 'required|date',
         ]);
+
+        $validatedData['user_id'] = auth()->user()->id;
 
         $task = Tasks::create($validatedData);
 
@@ -37,7 +39,7 @@ class TasksController extends Controller
     public function show($id)
     {
         // Fetch and return a specific task
-        $task = Tasks::findOrFail($id);
+        $task = Tasks::where('id', $id)->where('user_id', auth()->user()->id)->firstOrFail();
 
         return response()->json($task);
     }
@@ -46,7 +48,6 @@ class TasksController extends Controller
     {
         // Validate and update a specific task
         $validatedData = $request->validate([
-            'user_id' => 'sometimes|exists:users,id',
             'title' => 'sometimes|string|max:255',
             'description' => 'nullable|string',
             'priority' => 'sometimes|in:low,medium,high',
@@ -54,7 +55,7 @@ class TasksController extends Controller
             'due_date' => 'sometimes|date',
         ]);
 
-        $task = Tasks::findOrFail($id);
+        $task = Tasks::where('id', $id)->where('user_id', auth()->user()->id)->firstOrFail();
         $task->update($validatedData);
 
         return response()->json($task);
@@ -63,7 +64,7 @@ class TasksController extends Controller
     public function destroy($id)
     {
         // Delete a specific task
-        $task = Tasks::findOrFail($id);
+        $task = Tasks::where('id', $id)->where('user_id', auth()->user()->id)->firstOrFail();
         $task->delete();
 
         return response()->json(null, 204);

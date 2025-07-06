@@ -36,7 +36,6 @@
             window.dispatchEvent(new CustomEvent('modal-data', { detail: { task: this.task } }));
         },
         init() {
-            console.log('Initializing task edit modal');
             window.addEventListener('open-details-modal', (event) => {
                 console.log('Event payload:', event.detail);
                 if (event.detail && event.detail.task) {
@@ -162,7 +161,7 @@
                     .catch((error) => console.error('Error deleting task:', error));
 
                     {{-- window.dispatchEvent(new CustomEvent('close-modal', { detail: 'edit-task-modal' })); --}}
-                    window.location.reload();
+                    {{-- window.location.reload(); --}}
 
                 },
                 toggleEditMode() {
@@ -203,7 +202,6 @@
                     this.toggleEditMode();
                 },
                 init() {
-                    console.log('Initializing task edit modal');
                     window.addEventListener('modal-data', (event) => {
                         console.log('Event payload:', event.detail);
                         if (event.detail && event.detail.task) {

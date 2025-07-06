@@ -10,11 +10,9 @@
     editMode: false,
     taskId: null,
     init() {
-    console.log('Initializing task edit modal'); // Log initialization
         window.addEventListener('open-details-modal', (event) => {
             this.taskId = event.detail.task.id;
         });
-        console.log('Task ID updated:', this.taskId); // Log the updated taskId
     },
 }" x-init="init()" >
     <div>
@@ -137,11 +135,9 @@
     editMode: false,
     taskId: null,
     init() {
-        console.log('Initializing task edit modal'); // Log initialization
         window.addEventListener('open-details-modal', (event) => {
             this.taskId = event.detail.task.id;
         });
-        console.log('Task ID updated:', this.taskId); // Log the updated taskId
     },
 }" x-init="init()">
     <x-modal name="edit-task-modal" :show="false">

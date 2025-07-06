@@ -55,6 +55,11 @@ class TasksController extends Controller
             'due_date' => 'sometimes|date',
         ]);
 
+        $isIdExists = Tasks::find($id); // Use 'id' instead of 'uuid'
+        if (!$isIdExists) {
+            return response()->json(['error' => 'Task not found'], 404);
+        }
+        // dd($id);
         $task = Tasks::where('id', $id)->where('user_id', auth()->user()->id)->firstOrFail();
         $task->update($validatedData);
 

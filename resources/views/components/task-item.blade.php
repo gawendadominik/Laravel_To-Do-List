@@ -30,6 +30,11 @@
             })
             .catch((error) => console.error('Error updating task:', error));
         },
+        loadEditModal() {
+            console.log('Loading edit modal for task:', this.task);
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: 'edit-task-modal' }));
+            window.dispatchEvent(new CustomEvent('modal-data', { detail: { task: this.task } }));
+        },
         init() {
             console.log('Initializing task edit modal');
             window.addEventListener('open-details-modal', (event) => {
@@ -79,7 +84,7 @@
             <div class="ml-4">
                 <a
 
-                    x-on:click="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'edit-task-modal' }))"
+                    x-on:click="loadEditModal()"
                     class="text-base text-gray-800 hover:underline cursor-pointer"
                     :class="{ 'line-through': task.status === 'done' }"
                 >
@@ -121,15 +126,23 @@
         <x-slot name="formContent">
             <div
             x-data="{
+                task: {
+                    title: '',
+                    description: '',
+                    due_date: '',
+                    priority: 'low',
+                    user_id: '',
+                    status: 'to-do',
+                },
                 deleteTask() {
-                    if (!this.taskId) {
+                    if (!this.task.id) {
                         console.error('Task ID is null or undefined. Cannot delete task.');
                         return;
                     }
 
-                    console.log('Deleting task with ID:', this.taskId);
+                    console.log('Deleting task with ID:', this.task.id);
 
-                    fetch(`/api/tasks/${this.taskId}`, {
+                    fetch(`/api/tasks/${this.task.id}`, {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
@@ -152,14 +165,60 @@
                     window.dispatchEvent(new CustomEvent('close-modal', { detail: 'edit-task-modal' }));
                 },
                 toggleEditMode() {
-                this.editMode = !this.editMode;
+                    this.editMode = !this.editMode;
+                },
+                saveChanges() {
+                    if (!this.task.id) {
+                        console.error('Task ID is null or undefined. Cannot save changes.');
+                        return;
+                    }
+
+                    console.log('Saving changes for task ID:', this.task.id);
+                    console.log('Task data:', this.task);
+
+                    fetch(`/api/tasks/${this.task.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.getAttribute('content') || ''
+                        },
+                        body: JSON.stringify(this.task)
+                    })
+                    .then((response) => {
+                        if (!response.ok) {
+                            console.error('Failed to update task. Status:', response.status);
+                            return response.text().then((error) => { throw new Error(error); });
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        console.log('Task updated successfully:', data);
+                        this.fetchTasks();
+                    })
+                    .catch((error) => console.error('Error updating task:', error));
+
+                    window.dispatchEvent(new CustomEvent('close-modal', { detail: 'edit-task-modal' }));
+                    this.toggleEditMode();
+                },
+                init() {
+                    console.log('Initializing task edit modal');
+                    window.addEventListener('modal-data', (event) => {
+                        console.log('Event payload:', event.detail);
+                        if (event.detail && event.detail.task) {
+                            this.task = event.detail.task;
+                            this.taskId = this.task.id;
+                            console.log('Task ID updated:', this.taskId);
+                        } else {
+                            console.error('Invalid event payload. Task object is missing.');
+                        }
+                    });
                 },
             }"
-            >
+            x-init="init()">
                 <form
-                    method="POST"
+                    method="PUT"
                     class="space-y-6 bg-white p-6 rounded-b-lg shadow-md border border-gray-200"
-                    @submit.prevent="submitForm"
+                    @submit.prevent="saveChanges()"
                 >
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
@@ -221,7 +280,6 @@
                     <div class="flex justify-end">
                         <button
                             x-show="editMode"
-                            @click.prevent="toggleEditMode()"
                             type="submit"
                             class="inline-flex bg-orange-500 text-white px-6 py-3 rounded-lg shadow hover:bg-orange-600 transition font-semibold"
                         >

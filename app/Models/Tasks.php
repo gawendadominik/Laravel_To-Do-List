@@ -18,7 +18,7 @@ class Tasks extends Model
         'due_date'
     ];
 
-    protected $primaryKey = 'uuid';
+    protected $primaryKey = 'id';
     protected $keyType = 'string';
     public $incrementing = false;
 

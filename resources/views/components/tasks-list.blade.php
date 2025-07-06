@@ -122,29 +122,18 @@
         <x-task-list-header/>
         <!-- Grouped Tasks Section -->
 
-        <!-- PRIORITY SORT -->
-<div class="flex gap-2 mb-2">
-    <button @click="prioritySortOrder = 'none'" :class="prioritySortOrder === 'none' ? 'border-gray-600 text-gray-700 font-bold' : 'border-gray-300 text-gray-500 font-normal'" class="px-2 py-0.5 rounded-md shadow border hover:bg-gray-100 transition">
-        No Priority Sort
-    </button>
-    <button @click="prioritySortOrder = 'low'" :class="prioritySortOrder === 'low' ? 'border-gray-600 text-gray-700 font-bold' : 'border-gray-300 text-gray-500 font-normal'" class="px-2 py-0.5 rounded-md shadow border hover:bg-gray-100 transition">
-        Low → High
-    </button>
-    <button @click="prioritySortOrder = 'high'" :class="prioritySortOrder === 'high' ? 'border-gray-600 text-gray-700 font-bold' : 'border-gray-300 text-gray-500 font-normal'" class="px-2 py-0.5 rounded-md shadow border hover:bg-gray-100 transition">
-        High → Low
-    </button>
-</div>
+        <!-- SORT CONTROLS -->
+<div class="flex gap-2 mb-3 items-center">
+    <span class="text-sm font-medium text-gray-600">Sorting:</span>
 
-<!-- STATUS SORT -->
-<div class="flex gap-2 mb-4">
-    <button @click="statusSortOrder = 'none'" :class="statusSortOrder === 'none' ? 'border-gray-600 text-gray-700 font-bold' : 'border-gray-300 text-gray-500 font-normal'" class="px-2 py-0.5 rounded-md shadow border hover:bg-gray-100 transition">
-        No Status Sort
+    <!-- PRIORITY SORT -->
+    <button @click="prioritySortOrder = prioritySortOrder === 'none' ? 'low-high' : prioritySortOrder === 'low-high' ? 'high-low' : 'none'" :class="prioritySortOrder === 'none' ? 'border-gray-600 text-gray-700 font-bold' : prioritySortOrder === 'low-high' ? 'border-gray-500 text-gray-600 font-bold' : 'border-gray-600 text-gray-700 font-bold'" class="px-1.5 py-0.5 rounded-md shadow border hover:bg-gray-100 transition text-xs min-w-[120px] whitespace-nowrap">
+        Priority: <span x-text="prioritySortOrder === 'none' ? 'None' : prioritySortOrder === 'low-high' ? 'Low → High' : 'High → Low'"></span>
     </button>
-    <button @click="statusSortOrder = 'todo-done'" :class="statusSortOrder === 'todo-done' ? 'border-gray-600 text-gray-700 font-bold' : 'border-gray-300 text-gray-500 font-normal'" class="px-2 py-0.5 rounded-md shadow border hover:bg-gray-100 transition">
-        To-Do → Done
-    </button>
-    <button @click="statusSortOrder = 'done-todo'" :class="statusSortOrder === 'done-todo' ? 'border-gray-600 text-gray-700 font-bold' : 'border-gray-300 text-gray-500 font-normal'" class="px-2 py-0.5 rounded-md shadow border hover:bg-gray-100 transition">
-        Done → To-Do
+
+    <!-- STATUS SORT -->
+    <button @click="statusSortOrder = statusSortOrder === 'none' ? 'todo-done' : statusSortOrder === 'todo-done' ? 'done-todo' : 'none'" :class="statusSortOrder === 'none' ? 'border-gray-600 text-gray-700 font-bold' : statusSortOrder === 'todo-done' ? 'border-gray-500 text-gray-600 font-bold' : 'border-gray-600 text-gray-700 font-bold'" class="px-1.5 py-0.5 rounded-md shadow border hover:bg-gray-100 transition text-xs min-w-[120px] whitespace-nowrap">
+        Status: <span x-text="statusSortOrder === 'none' ? 'None' : statusSortOrder === 'todo-done' ? 'To-Do → Done' : 'Done → To-Do'"></span>
     </button>
 </div>
 

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Tasks;
+use Illuminate\Http\Request;
+use App\Models\PublicTaskLink;
+use Illuminate\Support\Str;
 
 class TasksController extends Controller
 {
@@ -78,5 +80,38 @@ class TasksController extends Controller
         $task->update(['is_deleted' => true]);
 
         return response()->json(null, 204);
+    }
+
+    public function createPublicLink($taskId)
+    {
+        $token = Str::random(40);
+        $publicLink = PublicTaskLink::create([
+            'task_id' => $taskId,
+            'token' => $token,
+            'expires_at' => now()->addDays(7), // optional
+        ]);
+
+        return response()->json([
+            'link' => route('public.task.show', $publicLink->token),
+            'expires_at' => $publicLink->expires_at,
+        ]);
+    }
+
+    public function getPublicLink($taskId)
+    {
+        $publicLink = PublicTaskLink::where('task_id', $taskId)
+            ->where(function ($query) {
+                $query->whereNull('expires_at')
+                    ->orWhere('expires_at', '>', now());
+            })
+            ->first();
+
+        if (!$publicLink) {
+            return response()->json(['error' => 'Public link not found or expired'], 404);
+        }
+        return response()->json([
+            'link' => route('public.task.show', $publicLink->token),
+            'expires_at' => $publicLink->expires_at,
+        ]);
     }
 }

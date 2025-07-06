@@ -72,6 +72,7 @@ class TasksController extends Controller
 
     public function destroy($id)
     {
+        // dd($id);
         // Soft delete a specific task by setting is_deleted to true
         $task = Tasks::where('id', $id)->where('user_id', auth()->user()->id)->firstOrFail();
         $task->update(['is_deleted' => true]);

@@ -132,38 +132,8 @@
                     user_id: '',
                     status: 'to-do',
                 },
-                deleteTask() {
-                    if (!this.task.id) {
-                        console.error('Task ID is null or undefined. Cannot delete task.');
-                        return;
-                    }
-
-                    console.log('Deleting task with ID:', this.task.id);
-
-                    fetch(`/api/tasks/${this.task.id}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.getAttribute('content') || ''
-                        }
-                    })
-                    .then((response) => {
-                        if (!response.ok) {
-                            console.error('Failed to delete task. Status:', response.status);
-                            return response.text().then((error) => { throw new Error(error); });
-                        }
-                        return response.json();
-                    })
-                    .then((data) => {
-                        console.log('Task deleted successfully:', data);
-                        window.dispatchEvent(new CustomEvent('fetch-tasks'));
-                    })
-                    .catch((error) => console.error('Error deleting task:', error));
-
-                    {{-- window.dispatchEvent(new CustomEvent('close-modal', { detail: 'edit-task-modal' })); --}}
-                    {{-- window.location.reload(); --}}
-
-                },
+=======
+>>>>>>> origin/develop
                 toggleEditMode() {
                     this.editMode = !this.editMode;
                 },
@@ -200,6 +170,31 @@
 
                     window.dispatchEvent(new CustomEvent('close-modal', { detail: 'edit-task-modal' }));
                     this.toggleEditMode();
+                },
+                deleteTask() {
+                    if (!this.task.id) {
+                        console.error('Task ID is null or undefined. Cannot delete task.');
+                        return;
+                    }
+
+                    console.log('Deleting task with ID:', this.task.id);
+
+                    fetch(`/api/tasks/${this.task.id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.getAttribute('content') || ''
+                        }
+                    })
+                    .then((data) => {
+                        console.log('Task deleted successfully:', data);
+                        window.dispatchEvent(new CustomEvent('fetch-tasks'));
+                    })
+                    .catch((error) => console.error('Error deleting task:', error));
+
+                    {{-- window.dispatchEvent(new CustomEvent('close-modal', { detail: 'edit-task-modal' })); --}}
+                    {{-- window.location.reload(); --}}
+
                 },
                 init() {
                     window.addEventListener('modal-data', (event) => {

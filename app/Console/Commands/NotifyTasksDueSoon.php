@@ -37,11 +37,11 @@ class NotifyTasksDueSoon extends Command
             if ($user) {
                 // Pass the array of tasks to the notification
                 $user->notify(new \App\Notifications\TaskDueSoon($userTasks, $dueDate = $tomorrow));
+                $userTasks->each(function ($task) {
+                    Tasks::where('id', $task->id)->update(['notified_due_soon' => 1]);
+                });
             }
         }
-
-        // $user = \App\Models\User::first();
-        // $user->notify(new \App\Notifications\TaskDueSoon());
 
         $this->info('Notifications sent.');
     }

@@ -132,8 +132,7 @@
                     user_id: '',
                     status: 'to-do',
                 },
-=======
->>>>>>> origin/develop
+                editMode: false,
                 toggleEditMode() {
                     this.editMode = !this.editMode;
                 },
@@ -163,12 +162,11 @@
                     })
                     .then((data) => {
                         console.log('Task updated successfully:', data);
-                        {{-- window.dispatchEvent(new CustomEvent('fetch-tasks')); --}}
                         window.location.reload();
                     })
                     .catch((error) => console.error('Error updating task:', error));
 
-                    window.dispatchEvent(new CustomEvent('close-modal', { detail: 'edit-task-modal' }));
+                    {{-- window.dispatchEvent(new CustomEvent('close-modal', { detail: 'edit-task-modal' })); --}}
                     this.toggleEditMode();
                 },
                 deleteTask() {
@@ -188,13 +186,10 @@
                     })
                     .then((data) => {
                         console.log('Task deleted successfully:', data);
-                        window.dispatchEvent(new CustomEvent('fetch-tasks'));
+                        {{-- window.dispatchEvent(new CustomEvent('fetch-tasks')); --}}
+                        window.location.reload();
                     })
                     .catch((error) => console.error('Error deleting task:', error));
-
-                    {{-- window.dispatchEvent(new CustomEvent('close-modal', { detail: 'edit-task-modal' })); --}}
-                    {{-- window.location.reload(); --}}
-
                 },
                 init() {
                     window.addEventListener('modal-data', (event) => {

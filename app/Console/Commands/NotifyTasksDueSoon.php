@@ -19,6 +19,7 @@ class NotifyTasksDueSoon extends Command
 
         $tasks = Tasks::where('notified_due_soon', false)
             ->whereDate('due_date', $tomorrow)
+            ->where('is_deleted', false) // Ensure we only notify for non-deleted tasks
             ->get()->groupBy('user_id');
 
         foreach ($tasks as $userId => $userTasks) {
@@ -26,6 +27,9 @@ class NotifyTasksDueSoon extends Command
             if ($user) {
                 // Pass the array of tasks to the notification
                 $user->notify(new \App\Notifications\TaskDueSoon($userTasks, $dueDate = $tomorrow));
+                $userTasks->each(function ($task) {
+                    Tasks::where('id', $task->id)->update(['notified_due_soon' => 1]);
+                });
             }
         }
 

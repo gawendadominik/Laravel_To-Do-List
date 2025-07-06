@@ -17,17 +17,6 @@ class NotifyTasksDueSoon extends Command
     {
         $tomorrow = Carbon::tomorrow()->startOfDay();
 
-        // $tasks = Tasks::where('notified_due_soon', false)
-        //     ->whereDate('due_date', $tomorrow)
-        //     ->get();
-
-        // foreach ($tasks->toArray() as $task) {
-        //     $user = User::find($task['user_id']);
-        //     if ($user) {
-        //         $user->notify(new \App\Notifications\TaskDueSoon());
-        //     }
-        // }
-
         $tasks = Tasks::where('notified_due_soon', false)
             ->whereDate('due_date', $tomorrow)
             ->where('is_deleted', false) // Ensure we only notify for non-deleted tasks

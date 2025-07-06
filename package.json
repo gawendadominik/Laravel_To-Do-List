@@ -5,6 +5,9 @@
         "dev": "vite",
         "build": "vite build",
         "start": "./vendor/bin/sail up -d && ./vendor/bin/sail npm run dev",
+        "queue-work": "./vendor/bin/sail artisan queue:work",
+        "schedule-run": "./vendor/bin/sail artisan schedule:work",
+        "cron-start": "concurrently \"npm run schedule-run\" \"npm run queue-work\"",
         "start-env": "alias sail='bash ./vendor/bin/sail' && sail up -d && sail artisan migrate && npm run dev"
     },
     "devDependencies": {
@@ -12,6 +15,7 @@
         "alpinejs": "^3.4.2",
         "autoprefixer": "^10.4.2",
         "axios": "^1.6.4",
+        "concurrently": "^9.2.0",
         "laravel-vite-plugin": "^1.0.0",
         "postcss": "^8.4.31",
         "tailwindcss": "^3.1.0",

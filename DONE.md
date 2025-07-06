@@ -1,59 +1,35 @@
-# Laravel To Do List by Dominik Gawenda
+## Laravel To-Do List – Podsumowanie projektu
 
-## Chapter 1: Environment Configuration
+### ⚙️ 1. Inicjalizacja projektu i konfiguracja środowiska
 
-This chapter details the environment setup for the Laravel To-Do-List project, based on all visible commits on the develop branch, with a focus on Laravel Sail and supporting tooling for local development.
-
----
-
-### 1. Laravel Sail: The Foundation
-
-The project is built and developed locally using Laravel Sail, Laravel's official Docker-based environment.  
-Sail provides a seamless way to run PHP, MySQL, Mailpit, and other services with no system dependencies except Docker.
-
-Project initialization included setting up Sail support, and the repository contains the necessary Docker Compose file, Sail scripts, and service definitions.
+Projekt rozpocząłem od utworzenia aplikacji Laravel oraz skonfigurowania środowiska programistycznego w oparciu o Dockera, korzystając z Laravel Sail. Następnie zainstalowałem Laravel Breeze jako system uwierzytelniania z gotowymi widokami logowania i rejestracji oraz Laravel Sanctum do ochrony tras API i zarządzania sesjami. Dodałem również pliki TODO.md i DONE.md do dokumentacji postępów prac.
 
 ---
 
-### 2. Database Configuration
+### 📄 2. Projektowanie struktury danych i logiki zadań
 
-MySQL is provided via Sail's Docker stack.  
-Connection parameters are managed in the environment configuration, ensuring database access and migrations are handled within the containerized setup.
-
----
-
-### 3. Mail: Mailpit Integration
-
-Mailpit is included as a service to allow local testing of email sending functionality.  
-The Mailpit UI is available for inspecting outgoing mail, and SMTP integration is handled through environment variables.  
-A Mailpit container was added to the Sail stack to streamline this process.
+Stworzyłem migrację dla tabeli `tasks` z angielskimi nazwami kolumn, a także model `Task` i kontroler `TaskController`, obsługujący dodawanie, edytowanie, usuwanie i wyświetlanie zadań. Zdefiniowałem wszystkie potrzebne trasy z zabezpieczeniem przez `auth` middleware, dbając o to, aby zadania były widoczne tylko dla zalogowanych użytkowników. Każde zadanie jest przypisane do swojego właściciela.
 
 ---
 
-### 4. Authentication
+### 👥 3. Obsługa wielu użytkowników i testowanie bezpieczeństwa
 
-Laravel Breeze provides basic authentication scaffolding and has been installed and configured for the project.  
-Laravel Sanctum enables API token authentication and is also set up for secure API access.
-
----
-
-### 5. Developer Experience
-
-Laravel Debugbar and IDE Helper are included for easier debugging and improved IDE support.  
-Debugbar artifacts are excluded from version control to keep the repository clean.
+Przygotowałem testowe dane użytkowników i zadań poprzez seedery oraz przetestowałem działanie systemu autoryzacji i rejestracji. Zadbano o poprawne przypisywanie zadań do użytkowników i zapewniono, że każdy użytkownik widzi wyłącznie swoje zadania.
 
 ---
 
-### 6. Logging & External Integrations
+### 🗅️ 4. Dashboard i zarządzanie zadaniami
 
-Spatie Activity Log and Spatie Google Calendar are installed and configured for audit logging and calendar integration, providing advanced features for tracking activity and external event management.
+Zrefaktoryzowałem układ dashboardu i przygotowałem go pod komponenty do zarządzania zadaniami. Stworzyłem widok listy zadań, który umożliwia przeglądanie zadań w formie przejrzystej tabeli. Wdrożony został mechanizm filtrowania zadań po statusie, priorytecie oraz terminie wykonania, co znacznie poprawia użyteczność przy większej liczbie zadań.
+
+---
+
+### 📩 5. Powiadomienia i automatyzacja
+
+Dodałem automatyczne powiadomienia e-mail, które przypominają użytkownikowi o zadaniu na 1 dzień przed terminem wykonania. Wykorzystałem do tego system kolejek Laravel (queues) oraz harmonogram zadań (scheduler), który codziennie uruchamia zadanie wysyłki maila z przypomnieniem.
 
 ---
 
-### 7. General Notes
+### 🎨 6. Stylizacja i routing
 
-All major environment services such as PHP, MySQL and Mailpit are managed through Sail and Docker.  
-Additional packages and tools are included to improve development, debugging, and integration capabilities.  
-Further configuration and integration details can be found in the commit history of the develop branch.
-
----
+Na zakończenie dostosowałem wygląd widoków logowania, rejestracji oraz resetowania hasła do reszty aplikacji. Poprawiłem również routing głównej strony, tak aby użytkownik po zalogowaniu był automatycznie kierowany do dashboardu z listą swoich zadań.

@@ -37,7 +37,17 @@ Install JavaScript dependencies using npm:
 npm install
 ```
 
-### Step 4: Configure Environment Variables
+### Step 4: Build Frontend Assets
+
+Compile the frontend assets for development:
+
+```bash
+npm run dev
+```
+
+This command will build and watch your frontend assets for changes.
+
+### Step 5: Configure Environment Variables
 
 Copy the `.env.example` file to `.env` and update the necessary environment variables:
 
@@ -47,7 +57,7 @@ cp .env.example .env
 
 Ensure the database credentials match the Docker MySQL service configuration.
 
-### Step 5: Create Sail Alias
+### Step 6: Create Sail Alias
 
 To simplify the usage of Laravel Sail, create an alias for the `./vendor/bin/sail` command:
 
@@ -57,7 +67,7 @@ alias sail='bash ./vendor/bin/sail'
 
 Add this alias to your shell configuration file (e.g., `.bashrc`, `.zshrc`) to make it persistent.
 
-### Step 6: Start Docker Services
+### Step 7: Start Docker Services
 
 Start the Docker environment using the Sail alias:
 
@@ -70,7 +80,7 @@ At this point, the Docker environment is running, and the following services are
 -   **laravel.test**: The Laravel application.
 -   **mysql**: MySQL database server.
 
-### Step 7: Run Migrations
+### Step 8: Run Migrations
 
 Run database migrations to set up the schema:
 
@@ -79,3 +89,25 @@ sail artisan migrate
 ```
 
 This step ensures the database is ready for use with the application.
+
+### Step 9: Run Scheduler and Queue Workers
+
+To enable task scheduling and queue workers, use the following commands:
+
+#### Start the Scheduler
+
+Run the Laravel scheduler in the background:
+
+```bash
+sail artisan schedule:work
+```
+
+#### Start the Queue Worker
+
+Run the queue worker to process jobs:
+
+```bash
+sail artisan queue:work
+```
+
+Ensure these commands are running in separate terminal windows or use a process manager to keep them active.

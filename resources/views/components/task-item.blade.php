@@ -9,6 +9,41 @@
         task: window.currentTask,
         editMode: false,
         taskId: null,
+        link: null,
+        createPublicLink() {
+            if (this.link) {
+                navigator.clipboard.writeText(this.link)
+                    .then(() => {
+                        console.log('Link copied to clipboard:', this.link);
+                    })
+                    .catch(error => {
+                        console.error('Error copying link to clipboard:', error);
+                    });
+                return;
+            }
+
+            fetch(`/api/tasks/${this.task.id}/create-public-link`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.getAttribute('content') || ''
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Failed to create public link. Status:', response.status);
+                    return response.text().then(error => { throw new Error(error); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                this.link = data.link;
+                console.log('Public link created:', this.link);
+            })
+            .catch(error => {
+                console.error('Error creating public link:', error);
+            });
+        },
         updateTaskStatus(task) {
             const statuses = ['to-do', 'in progress', 'done'];
             const currentIndex = statuses.indexOf(task.status);
@@ -90,7 +125,43 @@
                 </a>
             </div>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2" x-data="{
+            link: null,
+            createPublicLink() {
+                if (this.link) {
+                    navigator.clipboard.writeText(this.link)
+                        .then(() => {
+                            console.log('Link copied to clipboard:', this.link);
+                        })
+                        .catch(error => {
+                            console.error('Error copying link to clipboard:', error);
+                        });
+                    return;
+                }
+
+                fetch(`/api/tasks/${task.id}/create-public-link`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.getAttribute('content') || ''
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            console.error('Failed to create public link. Status:', response.status);
+                            return response.text().then(error => { throw new Error(error); });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        this.link = data.link;
+                        console.log('Public link created:', this.link);
+                    })
+                    .catch(error => {
+                        console.error('Error creating public link:', error);
+                    });
+            }
+        }">
             <!-- Task Status Badge -->
             <span class="px-3 py-1 text-sm font-medium rounded-full flex items-center gap-2">
                 <span
@@ -115,6 +186,19 @@
                     x-text="task.priority.charAt(0).toUpperCase() + task.priority.slice(1)"
                 ></span>
             </span>
+            <button
+                x-on:click="createPublicLink()"
+                type="button"
+                class="inline-flex items-center justify-between w-auto px-4 h-9 rounded-full bg-gray-100 hover:bg-gray-200 text-black transition-colors gap-2"
+                title="Share Task"
+            >
+                <!-- Share icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 3h7m0 0v7m0-7L10 14M5 10v10a1 1 0 001 1h10a1 1 0 001-1V14" />
+                </svg>
+                <!-- Display link inside the button -->
+                <span x-show="link" x-text="link" class="text-sm text-gray-600 truncate"></span>
+            </button>
         </div>
     </div>
 

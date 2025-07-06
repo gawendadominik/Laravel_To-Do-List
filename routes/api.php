@@ -20,3 +20,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->apiResource('tasks', TasksController::class);
+
+Route::middleware('auth:sanctum')->post('tasks/{task}/create-public-link', [TasksController::class, 'createPublicLink'])
+    ->name('tasks.createPublicLink');
+
+Route::middleware('auth:sanctum')->get('tasks/{task}/public-link', [TasksController::class, 'getPublicLink'])
+    ->name('tasks.getPublicLink');

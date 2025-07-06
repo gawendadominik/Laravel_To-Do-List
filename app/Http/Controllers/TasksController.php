@@ -12,6 +12,7 @@ class TasksController extends Controller
         // Fetch and return all tasks
         return response()->json(
             Tasks::where('user_id', auth()->user()->id)
+                ->where('is_deleted', false)
                 ->orderBy('due_date')
                 ->get()
                 ->groupBy('due_date')
@@ -39,7 +40,10 @@ class TasksController extends Controller
     public function show($id)
     {
         // Fetch and return a specific task
-        $task = Tasks::where('id', $id)->where('user_id', auth()->user()->id)->firstOrFail();
+        $task = Tasks::where('id', $id)
+            ->where('user_id', auth()->user()->id)
+            ->where('is_deleted', false)
+            ->firstOrFail();
 
         return response()->json($task);
     }
@@ -68,9 +72,9 @@ class TasksController extends Controller
 
     public function destroy($id)
     {
-        // Delete a specific task
+        // Soft delete a specific task by setting is_deleted to true
         $task = Tasks::where('id', $id)->where('user_id', auth()->user()->id)->firstOrFail();
-        $task->delete();
+        $task->update(['is_deleted' => true]);
 
         return response()->json(null, 204);
     }

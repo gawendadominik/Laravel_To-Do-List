@@ -83,9 +83,8 @@
             </label>
             <div class="ml-4">
                 <a
-
                     x-on:click="loadEditModal()"
-                    class="text-base text-gray-800 hover:underline cursor-pointer"
+                    class="text-base text-gray-800 hover:underline cursor-pointer hover:text-orange-600 transition-colors"
                     :class="{ 'line-through': task.status === 'done' }"
                 >
                     <span x-text="task.title"></span>
@@ -158,11 +157,13 @@
                     })
                     .then((data) => {
                         console.log('Task deleted successfully:', data);
-                        this.fetchTasks();
+                        window.dispatchEvent(new CustomEvent('fetch-tasks'));
                     })
                     .catch((error) => console.error('Error deleting task:', error));
 
-                    window.dispatchEvent(new CustomEvent('close-modal', { detail: 'edit-task-modal' }));
+                    {{-- window.dispatchEvent(new CustomEvent('close-modal', { detail: 'edit-task-modal' })); --}}
+                    window.location.reload();
+
                 },
                 toggleEditMode() {
                     this.editMode = !this.editMode;
@@ -193,7 +194,8 @@
                     })
                     .then((data) => {
                         console.log('Task updated successfully:', data);
-                        this.fetchTasks();
+                        {{-- window.dispatchEvent(new CustomEvent('fetch-tasks')); --}}
+                        window.location.reload();
                     })
                     .catch((error) => console.error('Error updating task:', error));
 
@@ -277,28 +279,40 @@
                             <option value="high">High</option>
                         </select>
                     </div>
-                    <div class="flex justify-end">
+                    <div class="flex justify-end gap-3 mt-8">
+                        <button
+                            @click.prevent="deleteTask()"
+                            type="button"
+                            class="inline-flex items-center gap-2 bg-red-100 hover:bg-red-200 text-red-600 px-5 py-2.5 rounded-lg shadow font-semibold transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-red-200 focus:ring-offset-2 border border-red-200 opacity-60"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            Delete Task
+                        </button>
                         <button
                             x-show="editMode"
                             type="submit"
-                            class="inline-flex bg-orange-500 text-white px-6 py-3 rounded-lg shadow hover:bg-orange-600 transition font-semibold"
+                            class="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white/90 px-5 py-2.5 rounded-lg shadow font-semibold transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"
                         >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <!-- Checkmark icon -->
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                            </svg>
                             Save Changes
                         </button>
                         <button
                             x-show="!editMode"
                             @click.prevent="toggleEditMode()"
                             type="button"
-                            class="inline-flex bg-orange-500 text-white px-6 py-3 rounded-lg shadow hover:bg-orange-600 transition font-semibold"
+                            class="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white/90 px-5 py-2.5 rounded-lg shadow font-semibold transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 border border-orange-600"
                         >
-                            Update Task
-                        </button>
-                        <button
-                            @click.prevent="deleteTask()"
-                            type="button"
-                            class="inline-flex bg-red-500 text-white px-6 py-3 rounded-lg shadow hover:bg-red-600 transition font-semibold"
-                        >
-                            Delete Task
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <!-- Simple straight pencil icon -->
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 113.182 3.182L7.5 19.213l-4 1 1-4L16.862 3.487zM15 6l3 3" />
+                            </svg>
+                            </svg>
+                            Edit Task
                         </button>
                     </div>
                 </form>

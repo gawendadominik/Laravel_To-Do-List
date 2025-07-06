@@ -15,9 +15,12 @@ class Tasks extends Model
         'description',
         'priority',
         'status',
-        'due_date'
+        'due_date',
+        'notified_due_soon',
+        'is_deleted',
     ];
 
+    protected $primaryKey = 'id';
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -34,6 +37,6 @@ class Tasks extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

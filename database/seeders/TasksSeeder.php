@@ -12,6 +12,26 @@ class TasksSeeder extends Seeder
      */
     public function run(): void
     {
+        Tasks::create([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'user_id' => (string) \Illuminate\Support\Str::uuid(),
+            'title' => "Task " . \Illuminate\Support\Str::random(8),
+            'description' => "Description: " . \Illuminate\Support\Str::random(20),
+            'priority' => 'low',
+            'status' => 'to-do',
+            'due_date' => now()->toDateString(),
+        ]);
+
+        Tasks::create([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'user_id' => (string) \Illuminate\Support\Str::uuid(),
+            'title' => "Task " . \Illuminate\Support\Str::random(8),
+            'description' => "Description: " . \Illuminate\Support\Str::random(20),
+            'priority' => 'high',
+            'status' => 'to-do',
+            'due_date' => now()->addDays(5)->toDateString(),
+        ]);
+
         foreach (range(1, 10) as $index) {
             Tasks::create([
                 'id' => (string) \Illuminate\Support\Str::uuid(),

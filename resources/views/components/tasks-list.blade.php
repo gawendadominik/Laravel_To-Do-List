@@ -35,15 +35,12 @@
                 if (this.showAllTasks) {
                     return this.groupedTasks;
                 }
-                const today = new Date();
-                const sevenDaysLater = new Date(today);
-                sevenDaysLater.setDate(today.getDate() + 7);
                 return Object.fromEntries(
-                    Object.entries(this.groupedTasks).filter(([groupKey]) => {
-                        const taskDate = new Date(groupKey);
-                        return taskDate <= sevenDaysLater;
-                    })
+                    Object.entries(this.groupedTasks).slice(0, 5)
                 );
+            },
+            toggleTaskView() {
+                this.showAllTasks = !this.showAllTasks;
             },
             taskGroupKeyModifier(groupKey) {
                 const today = new Date();
@@ -115,14 +112,21 @@
             </template>
         </div>
 
-        <!-- Load More Button Component -->
+        <!-- Load More / Show Less Button Component -->
         <div class="text-center mt-4">
             <button
-                @click="showAllTasks = true"
+                @click="toggleTaskView"
                 x-show="!showAllTasks"
                 class="text-orange-500 border border-orange-500 px-4 py-2 rounded-lg shadow hover:bg-orange-100 transition"
             >
                 Load More Tasks
+            </button>
+            <button
+                @click="toggleTaskView"
+                x-show="showAllTasks"
+                class="text-orange-500 border border-orange-500 px-4 py-2 rounded-lg shadow hover:bg-orange-100 transition"
+            >
+                Show Less Tasks
             </button>
         </div>
     </div>

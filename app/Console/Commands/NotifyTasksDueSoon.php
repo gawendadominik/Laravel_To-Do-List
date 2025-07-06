@@ -30,6 +30,7 @@ class NotifyTasksDueSoon extends Command
 
         $tasks = Tasks::where('notified_due_soon', false)
             ->whereDate('due_date', $tomorrow)
+            ->where('is_deleted', false) // Ensure we only notify for non-deleted tasks
             ->get()->groupBy('user_id');
 
         foreach ($tasks as $userId => $userTasks) {

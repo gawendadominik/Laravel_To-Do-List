@@ -1,14 +1,14 @@
 <div>
     <!-- Jumbotron Component -->
 
-    <div x-data="{ showJumbotron: true }">
+    {{-- <div x-data="{ showJumbotron: true }">
         <x-jumbotron
             x-show="showJumbotron"
             :name=" auth()->user()->name "
             :message="'Here you can manage your tasks efficiently.'"
             @close-jumbotron.window="showJumbotron = false"
         />
-    </div>
+    </div> --}}
 
     <!-- Tasks List -->
     <div

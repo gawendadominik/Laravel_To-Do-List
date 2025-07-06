@@ -12,9 +12,12 @@ class TasksSeeder extends Seeder
      */
     public function run(): void
     {
+        // Get or create a test user
+        $user = \App\Models\User::first() ?? \App\Models\User::factory()->create();
+
         Tasks::create([
             'id' => (string) \Illuminate\Support\Str::uuid(),
-            'user_id' => (string) \Illuminate\Support\Str::uuid(),
+            'user_id' => $user->id,
             'title' => "Task " . \Illuminate\Support\Str::random(8),
             'description' => "Description: " . \Illuminate\Support\Str::random(20),
             'priority' => 'low',
@@ -24,7 +27,7 @@ class TasksSeeder extends Seeder
 
         Tasks::create([
             'id' => (string) \Illuminate\Support\Str::uuid(),
-            'user_id' => (string) \Illuminate\Support\Str::uuid(),
+            'user_id' => $user->id,
             'title' => "Task " . \Illuminate\Support\Str::random(8),
             'description' => "Description: " . \Illuminate\Support\Str::random(20),
             'priority' => 'high',
@@ -35,7 +38,7 @@ class TasksSeeder extends Seeder
         foreach (range(1, 10) as $index) {
             Tasks::create([
                 'id' => (string) \Illuminate\Support\Str::uuid(),
-                'user_id' => (string) \Illuminate\Support\Str::uuid(),
+                'user_id' => $user->id,
                 'title' => "Task " . \Illuminate\Support\Str::random(8),
                 'description' => "Description: " . \Illuminate\Support\Str::random(20),
                 'priority' => 'medium',

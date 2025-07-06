@@ -17,28 +17,28 @@ class NotifyTasksDueSoon extends Command
     {
         $tomorrow = Carbon::tomorrow()->startOfDay();
 
-        $tasks = Tasks::where('notified_due_soon', false)
-            ->whereDate('due_date', $tomorrow)
-            ->get();
-
-        foreach ($tasks->toArray() as $task) {
-            $user = User::find($task['user_id']);
-            if ($user) {
-                $user->notify(new \App\Notifications\TaskDueSoon());
-            }
-        }
-
         // $tasks = Tasks::where('notified_due_soon', false)
         //     ->whereDate('due_date', $tomorrow)
-        //     ->get()->groupBy('user_id');
+        //     ->get();
 
-        // foreach ($tasks as $userId => $userTasks) {
-        //     $user = User::find($userId);
+        // foreach ($tasks->toArray() as $task) {
+        //     $user = User::find($task['user_id']);
         //     if ($user) {
-        //         // Pass the array of tasks to the notification
-        //         $user->notify(new \App\Notifications\TaskDueSoon($userTasks->toArray()));
+        //         $user->notify(new \App\Notifications\TaskDueSoon());
         //     }
         // }
+
+        $tasks = Tasks::where('notified_due_soon', false)
+            ->whereDate('due_date', $tomorrow)
+            ->get()->groupBy('user_id');
+
+        foreach ($tasks as $userId => $userTasks) {
+            $user = User::find($userId);
+            if ($user) {
+                // Pass the array of tasks to the notification
+                $user->notify(new \App\Notifications\TaskDueSoon($userTasks, $dueDate = $tomorrow));
+            }
+        }
 
         // $user = \App\Models\User::first();
         // $user->notify(new \App\Notifications\TaskDueSoon());

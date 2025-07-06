@@ -36,7 +36,6 @@
             window.dispatchEvent(new CustomEvent('modal-data', { detail: { task: this.task } }));
         },
         init() {
-            console.log('Initializing task edit modal');
             window.addEventListener('open-details-modal', (event) => {
                 console.log('Event payload:', event.detail);
                 if (event.detail && event.detail.task) {
@@ -133,6 +132,8 @@
                     user_id: '',
                     status: 'to-do',
                 },
+=======
+>>>>>>> origin/develop
                 toggleEditMode() {
                     this.editMode = !this.editMode;
                 },
@@ -196,7 +197,6 @@
 
                 },
                 init() {
-                    console.log('Initializing task edit modal');
                     window.addEventListener('modal-data', (event) => {
                         console.log('Event payload:', event.detail);
                         if (event.detail && event.detail.task) {

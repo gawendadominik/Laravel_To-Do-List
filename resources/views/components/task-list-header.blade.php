@@ -1,4 +1,4 @@
-<div x-data="{}" class="flex justify-between items-center mb-4">
+<div x-data="{}" class="flex justify-between items-center">
     <h2 class="text-2xl font-bold text-gray-800">Your tasks</h2>
     <a
         x-on:click="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'new-task-modal' }))"

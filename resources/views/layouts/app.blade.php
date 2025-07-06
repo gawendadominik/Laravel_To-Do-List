@@ -14,7 +14,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased bg-gray-100 overflow-hidden">
+    <body class="font-sans antialiased bg-gray-100 overflow-auto">
         <!-- Navigation always on top -->
         <div class="min-h-screen dark:bg-gray-900">
             <div class="sticky top-0 z-50">

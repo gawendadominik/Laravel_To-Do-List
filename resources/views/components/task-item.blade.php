@@ -30,15 +30,17 @@
             })
             .catch((error) => console.error('Error updating task:', error));
         },
-        toggleEditMode() {
-            this.editMode = !this.editMode;
-        },
         init() {
             console.log('Initializing task edit modal');
             window.addEventListener('open-details-modal', (event) => {
-                this.taskId = event.detail.task.id;
+                console.log('Event payload:', event.detail);
+                if (event.detail && event.detail.task) {
+                    this.taskId = event.detail.task.id;
+                    console.log('Task ID updated:', this.taskId);
+                } else {
+                    console.error('Invalid event payload. Task object is missing.');
+                }
             });
-            console.log('Task ID updated:', this.taskId);
         },
     }"
     x-init="init()"
@@ -113,9 +115,47 @@
         </div>
     </div>
 
+
+    {{-- TODO: I cant pass task to modal --}}
     <x-task-edit-modal>
         <x-slot name="formContent">
-            <div x-data="{ task }">
+            <div
+            x-data="{
+                deleteTask() {
+                    if (!this.taskId) {
+                        console.error('Task ID is null or undefined. Cannot delete task.');
+                        return;
+                    }
+
+                    console.log('Deleting task with ID:', this.taskId);
+
+                    fetch(`/api/tasks/${this.taskId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.getAttribute('content') || ''
+                        }
+                    })
+                    .then((response) => {
+                        if (!response.ok) {
+                            console.error('Failed to delete task. Status:', response.status);
+                            return response.text().then((error) => { throw new Error(error); });
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        console.log('Task deleted successfully:', data);
+                        this.fetchTasks();
+                    })
+                    .catch((error) => console.error('Error deleting task:', error));
+
+                    window.dispatchEvent(new CustomEvent('close-modal', { detail: 'edit-task-modal' }));
+                },
+                toggleEditMode() {
+                this.editMode = !this.editMode;
+                },
+            }"
+            >
                 <form
                     method="POST"
                     class="space-y-6 bg-white p-6 rounded-b-lg shadow-md border border-gray-200"
@@ -194,6 +234,13 @@
                             class="inline-flex bg-orange-500 text-white px-6 py-3 rounded-lg shadow hover:bg-orange-600 transition font-semibold"
                         >
                             Update Task
+                        </button>
+                        <button
+                            @click.prevent="deleteTask()"
+                            type="button"
+                            class="inline-flex bg-red-500 text-white px-6 py-3 rounded-lg shadow hover:bg-red-600 transition font-semibold"
+                        >
+                            Delete Task
                         </button>
                     </div>
                 </form>

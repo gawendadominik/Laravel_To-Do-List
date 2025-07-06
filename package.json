@@ -6,8 +6,7 @@
         "build": "vite build",
         "start": "./vendor/bin/sail up -d && ./vendor/bin/sail npm run dev",
         "queue-work": "./vendor/bin/sail artisan queue:work",
-        "schedule-run": "./vendor/bin/sail artisan schedule:work",
-        "cron-start": "concurrently \"npm run schedule-run\" \"npm run queue-work\"",
+        "schedule-work": "./vendor/bin/sail artisan schedule:work",
         "start-env": "alias sail='bash ./vendor/bin/sail' && sail up -d && sail artisan migrate && npm run dev"
     },
     "devDependencies": {

@@ -1,4 +1,4 @@
-# Opis zadania
+# Opis
 
 Stwórz aplikację **"To-Do list"**, która umożliwia użytkownikowi dodawanie, edytowanie, przeglądanie i usuwanie zadań (CRUD) oraz wysyłanie powiadomień e-mail.
 
@@ -37,7 +37,7 @@ Stwórz aplikację **"To-Do list"**, która umożliwia użytkownikowi dodawanie,
 
 ---
 
-## Dodatkowe funkcje (opcjonalne)
+## Dodatkowe funkcje
 
 ### 7. Pełna historia edycji notatek
 
@@ -57,8 +57,6 @@ Stwórz aplikację **"To-Do list"**, która umożliwia użytkownikowi dodawanie,
 
 ### 2. Front-end
 
--   Prosty interfejs użytkownika stworzony w Laravel Blade (opcjonalnie AJAX).
+- Laravel Blade.
 
-### 3. (Opcjonalnie) Konfiguracja w Dockerze
-
--   Możliwość dostarczenia projektu z konfiguracją Docker (`Dockerfile`, `docker-compose.yml`). Dzięki temu uruchomienie aplikacji będzie łatwiejsze.
+### 3. Konfiguracja w Dockerze
